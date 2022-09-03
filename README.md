@@ -1,6 +1,6 @@
 # yeectl
 Yeectl is a Python TUI for controlling Yeelights. It uses the [Yeelight Python library](https://gitlab.com/stavros/python-yeelight) to control the lights, and [py-cui](https://github.com/jwlodek/py_cui) to create an interface.
-!(.github/picture.png)
+!(https://github.com/Bean499/yeectl/blob/main/.github/picture.png)
 
 ## Installation
 To install remotely using `pip`:
