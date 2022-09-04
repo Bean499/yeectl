@@ -8,7 +8,18 @@ import os
 import py_cui
 import yeelight
 
-__version__ = 'v0.0.2'
+__version__ = 'v0.0.3'
+
+def getNames():
+    with open(os.path.expanduser("~/.config/yeectl/lights"), "r") as file:
+        contents = file.readlines()
+    lights = {}
+    for line in contents:
+        split = line.split(": ")
+        ip = split[0]
+        name = split[1]
+        lights[ip] = name
+    return lights
 
 def findBulbs():
     #Array to store bulb objects in
@@ -16,12 +27,21 @@ def findBulbs():
     #Dict of models and better display names for them
     models = {
             "color": "Colour bulb",
+            "mono": "White bulb",
             "stripe": "Lightstrip",
             }
+    names = getNames()
     #For each bulb on network
     for bulb in yeelight.discover_bulbs():
-        #Get display name
-        displayName = models[bulb["capabilities"]["model"]]
+        try:
+            #Try to get custom display name
+            displayName = names[bulb["ip"]].strip()
+        except KeyError:
+            try:
+                #Otherwise try to get display name from list of default names
+                displayName = models[bulb["capabilities"]["model"]]
+            except KeyError:
+                displayName = "Yeelight"
         #Append 
         count = 0
         for name in bulbs:
@@ -112,10 +132,7 @@ class YeectlApp:
         try:
             with open(os.path.expanduser(filename), "r") as file:
                 contents = file.readlines()
-            lines = []
             for line in contents:
-                lines.append(line)
-            for line in lines:
                 split = line.split(": ")
                 name = split[0]
                 hex = split[1]
